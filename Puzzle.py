@@ -21,14 +21,13 @@ def solve_puzzle(Board, Source, Destination):
     prev = {(row, col): None for row in range(len(Board)) for col in range(len(Board[0]))}
     queue = deque([Source])
     visited = set()
-
+    visited.add(Source)
     while Destination not in visited and queue:  # either we found the target or we ran out of nodes to visit
         node = queue.popleft()
-        visited.add(node)
         for neighbor in find_neighbors(Board, node, visited):  # call neighbors function to find neighbors
             prev[neighbor] = node  # store the previous node for each neighbor
-            if neighbor not in visited and neighbor not in queue:  # no revisiting allowed/no re-adding to queue
-                queue.append(neighbor)
+            queue.append(neighbor)
+            visited.add(neighbor)
     if Destination in visited:
         return find_path(prev, Destination)
 
