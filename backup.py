@@ -3,13 +3,13 @@
 # Course: CS325 - Analysis of Algorithms
 # Assignment: Portfolio Project - Puzzle
 
-from collections import deque
+import heapq
 
 
 def solve_puzzle(Board, Source, Destination):
     """
-    Solves the puzzle by using a BFS traversal. The BFS terminate as soon as the destination is added to the visited
-    set which indicates that the shortest path has been found.
+    Solves the puzzle by finding the shortest path from the source to the destination. Uses Dijkstra's algorithm by
+    assigning each edge a weight of 1 so that the shortest path is the path with the least number of edges.
 
     :param Board: A 2-d puzzle of size MxN filled with '-' representing empty spaces and '#' representing barriers.
     :param Source: The starting position of the puzzle. Given as a tuple: (a, b).
@@ -18,43 +18,42 @@ def solve_puzzle(Board, Source, Destination):
     :return: A list of tuples representing the shortest path from
     the source to the destination and a string representing the path as using R, L, D, U (right, left, down, up).
     """
-    # A dictionary for storing the previous node for each node
+    distances = {(row, col): float('inf') for row in range(len(Board)) for col in range(len(Board[0]))}
+    distances[Source] = 0
     prev = {(row, col): None for row in range(len(Board)) for col in range(len(Board[0]))}
-    queue = deque([Source])
-    visited = set()
+    priority_queue = [(0, Source)]
 
-    while Destination not in visited and queue:  # either we found the target or we ran out of nodes to visit
-        node = queue.popleft()
-        visited.add(node)
-        for neighbor in find_neighbors(Board, node, visited):  # call neighbors function to find neighbors
-            prev[neighbor] = node  # store the previous node for each neighbor
-            if neighbor not in visited and neighbor not in queue:  # no revisiting allowed/no re-adding to queue
-                queue.append(neighbor)
-    if Destination in visited:
-        return find_path(prev, Destination)
+    while priority_queue:
+        dist, node = heapq.heappop(priority_queue)  # pop the node with the shortest distance
+        for neighbor in find_neighbors(Board, node, distances):  # call neighbors function to find neighbors
+            prev[neighbor] = node
+            distances[neighbor] = dist + 1  # distance increases by 1 for each successive neighbor
+            heapq.heappush(priority_queue, (distances[neighbor], neighbor))  # push the neighbor onto the queue
+            if distances[Destination] != float('inf'):
+                return find_path(prev, Destination)
 
     return None  # if no path possible
 
 
-def find_neighbors(Board, Node, visited):
+def find_neighbors(Board, Node, distances):
     """
-    Finds the neighbors of a given node on the board.
+    Finds the neighbors of a given node on the board. Movement is prioritized in the order of up, down, left, right.
 
     :param Board: The puzzle board from the parent function.
     :param Node: The node that is currently being processed by the parent function.
-    :param visited: The set of visited nodes from the parent function.
+    :param distances: The dictionary which stores the distances from the parent function.
     :return: The neighboring nodes as a list of tuples.
     """
     neighbors = []
     row, col = Node
     # Must be in range of board, not a barrier, and not already visited
-    if row > 0 and Board[row - 1][col] != '#' and (row - 1, col) not in visited:  # up
+    if row > 0 and Board[row - 1][col] != '#' and distances[(row - 1, col)] == float('inf'):  # up
         neighbors.append((row - 1, col))
-    if row < len(Board) - 1 and Board[row + 1][col] != '#' and (row + 1, col) not in visited:  # down
+    if row < len(Board) - 1 and Board[row + 1][col] != '#' and distances[(row + 1, col)] == float('inf'):  # down
         neighbors.append((row + 1, col))
-    if col > 0 and Board[row][col - 1] != '#' and (row, col - 1) not in visited:  # left
+    if col > 0 and Board[row][col - 1] != '#' and distances[(row, col - 1)] == float('inf'):  # left
         neighbors.append((row, col - 1))
-    if col < len(Board[0]) - 1 and Board[row][col + 1] != '#' and (row, col + 1) not in visited:  # right
+    if col < len(Board[0]) - 1 and Board[row][col + 1] != '#' and distances[(row, col + 1)] == float('inf'):  # right
         neighbors.append((row, col + 1))
     return neighbors
 
