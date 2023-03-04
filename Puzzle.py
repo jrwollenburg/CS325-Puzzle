@@ -22,7 +22,7 @@ def solve_puzzle(Board, Source, Destination):
     distances[Source] = 0
     prev = {(row, col): None for row in range(len(Board)) for col in range(len(Board[0]))}
     priority_queue = [(0, Source)]
-    print(Board, Source, Destination)
+
     while priority_queue:
         dist, node = heapq.heappop(priority_queue)  # pop the node with the shortest distance
         for neighbor in find_neighbors(Board, node, distances):  # call neighbors function to find neighbors
@@ -85,15 +85,3 @@ def find_path(prev, Destination):
         current_node = prev_node
         prev_node = prev[prev_node]  # update pointers
     return path[::-1], path_string[::-1]  # path and string going back so reverse them
-
-
-Puzzle = [
-    ['-', '#', '-'],
-    ['-', '#', '-'],
-    ['-', '#', '-']
-]
-
-start = (0, 0)
-end = (2, 2)
-print(solve_puzzle(Puzzle, start, end))
-# Output: [(0, 2), (0, 1), (1, 1), (2, 1), (2, 2)]
