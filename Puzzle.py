@@ -32,7 +32,7 @@ def solve_puzzle(Board, Source, Destination):
             if distances[Destination] != float('inf'):
                 return find_path(prev, Destination)
 
-    return []  # if no path possible
+    return None  # if no path possible
 
 
 def find_neighbors(Board, Node, distances):
@@ -88,14 +88,12 @@ def find_path(prev, Destination):
 
 
 Puzzle = [
-    ['-', '-', '-', '-', '-'],
-    ['-', '-', '#', '-', '-'],
-    ['-', '-', '-', '-', '-'],
-    ['#', '-', '#', '#', '-'],
-    ['-', '#', '-', '-', '-']
+    ['-', '#', '-'],
+    ['-', '#', '-'],
+    ['-', '#', '-']
 ]
 
-start = (4, 0)
-end = (4, 4)
+start = (0, 0)
+end = (2, 2)
 print(solve_puzzle(Puzzle, start, end))
 # Output: [(0, 2), (0, 1), (1, 1), (2, 1), (2, 2)]
