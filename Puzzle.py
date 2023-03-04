@@ -13,10 +13,9 @@ def solve_puzzle(Board, Source, Destination):
 
     :param Board: A 2-d puzzle of size MxN filled with '-' representing empty spaces and '#' representing barriers.
     :param Source: The starting position of the puzzle. Given as a tuple: (a, b).
-    :param Destination: The destination
-    position of the puzzle. Given as a tuple: (x, y).
-    :return: A list of tuples representing the shortest path from
-    the source to the destination and a string representing the path as using R, L, D, U (right, left, down, up).
+    :param Destination: The destination position of the puzzle. Given as a tuple: (x, y).
+    :return: A list of tuples representing the shortest path from the source to the destination and a
+    string representing the path as using R, L, D, U (right, left, down, up).
     """
     # A dictionary for storing the previous node for each node
     prev = {(row, col): None for row in range(len(Board)) for col in range(len(Board[0]))}
